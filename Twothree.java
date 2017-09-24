@@ -10,10 +10,10 @@ public class Twothree {
       int h = tree.height;
 
       if (h == -1) {
-          LeafNode newLeaf = new LeafNode();
-          newLeaf.guide = key;
-          newLeaf.value = value;
-          tree.root = newLeaf; 
+          Node n = new Node();
+          n.guide = key;
+          n.value = value;
+          tree.root = n; 
           tree.height = 0;
       }
       else {
@@ -26,10 +26,16 @@ public class Twothree {
             if (ws.offset == 0) {
                newRoot.child0 = ws.newNode; 
                newRoot.child1 = tree.root;
+               System.out.println("Added child0");
             }
             else {
                newRoot.child0 = tree.root; 
                newRoot.child1 = ws.newNode;
+
+               if (h >= 1){
+                  newRoot.value = tree.root.value;
+                  tree.root.value = 0;
+               }
             }
             resetGuide(newRoot);
             tree.root = newRoot;
@@ -45,25 +51,24 @@ public class Twothree {
          // we're at the leaf level, so compare and 
          // either update value or insert new leaf
 
-         LeafNode leaf = (LeafNode) p; //downcast
-         int cmp = key.compareTo(leaf.guide);
+         int cmp = key.compareTo(p.guide);
 
          if (cmp == 0) {
-            leaf.value = value; 
+            p.value = value; 
             return null;
          }
 
          // create new leaf node and insert into tree
-         LeafNode newLeaf = new LeafNode();
-         newLeaf.guide = key; 
-         newLeaf.value = value;
+         Node n = new Node();
+         n.guide = key; 
+         n.value = value;
 
          int offset = (cmp < 0) ? 0 : 1;
          // offset == 0 => newLeaf inserted as left sibling
          // offset == 1 => newLeaf inserted as right sibling
 
          WorkSpace ws = new WorkSpace();
-         ws.newNode = newLeaf;
+         ws.newNode = n;
          ws.offset = offset;
          ws.scratch = new Node[4];
 
@@ -76,15 +81,15 @@ public class Twothree {
 
          if (key.compareTo(q.child0.guide) <= 0) {
             pos = 0; 
-            ws = doInsert(key, value, q.child0, h-1);
+            ws = doInsert(key, value - q.value, q.child0, h-1);
          }
          else if (key.compareTo(q.child1.guide) <= 0 || q.child2 == null) {
             pos = 1;
-            ws = doInsert(key, value, q.child1, h-1);
+            ws = doInsert(key, value -q.value, q.child1, h-1);
          }
          else {
             pos = 2; 
-            ws = doInsert(key, value, q.child2, h-1);
+            ws = doInsert(key, value - q.value, q.child2, h-1);
          }
 
          if (ws != null) {
@@ -94,7 +99,7 @@ public class Twothree {
                int sz = copyOutChildren(q, ws.scratch);
                insertNode(ws.scratch, ws.newNode, sz, pos + ws.offset);
                if (sz == 2) {
-                  ws.newNode = null;
+                  ws.newNode = null; //adjusted for return to insert loop
                   ws.guideChanged = resetChildren(q, ws.scratch, 0, 3);
                }
                else {
@@ -168,6 +173,7 @@ public class Twothree {
 
 class Node {
    String guide;
+   int value;
    // guide points to max key in subtree rooted at node
 }
 
