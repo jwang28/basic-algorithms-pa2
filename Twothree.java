@@ -26,7 +26,6 @@ public class Twothree {
             if (ws.offset == 0) {
                newRoot.child0 = ws.newNode; 
                newRoot.child1 = tree.root;
-               System.out.println("Added child0");
             }
             else {
                newRoot.child0 = tree.root; 
@@ -104,6 +103,7 @@ public class Twothree {
                }
                else {
                   ws.newNode = new InternalNode();
+                  ws.newNode.value = q.value;
                   ws.offset = 1;
                   resetChildren(q, ws.scratch, 0, 2);
                   resetChildren((InternalNode) ws.newNode, ws.scratch, 2, 2);

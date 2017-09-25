@@ -26,7 +26,7 @@ public class Solution3 extends Twothree {
           int value = Integer.parseInt(words[3]);
           String left = words[1].compareTo(words[2]) <=0 ? words[1] : words[2];
           String right = words[1].compareTo(words[2]) <= 0 ? words[2] : words [1];
-          extendedTree.updateRange (tree.root.guide, tree.root, left, right, tree.height, value);
+          extendedTree.updateRange ("", tree.root, left, right, tree.height, value);
         }
         else{
           //return entrance fee
@@ -34,17 +34,10 @@ public class Solution3 extends Twothree {
         }
     	}
     }
-/*
-  static void printRange (Node n, int height){
-    if (height == 0){
-      System.out.println(n.key + ' ' + n.height);
-      return;
-    }
-    if 
-  }*/
 
   static void updateRange (String low, Node n, String left, String right, int height, int value){
-
+    System.out.println(left.compareTo(""));
+    System.out.println(low + ' ' + left + ' ' + n.guide + ' '+ right);
     if (height == 0){
       if (n.guide.compareTo(left) >= 0 && n.guide.compareTo(right) <= 0){
         n.value= n.value + value;
@@ -52,7 +45,8 @@ public class Solution3 extends Twothree {
       return;
     }
     //fully in range
-    if (left.compareTo(low) <= 0 && right.compareTo(n.guide) >= 0){
+    if ((low.equals("") || left.compareTo(low) <= 0 ) && right.compareTo(n.guide) >= 0){
+      System.out.println("covers");
   
       n.value+=value;
       //add print path of root
@@ -66,6 +60,9 @@ public class Solution3 extends Twothree {
       if (q.child2 != null){
         updateRange(q.child1.guide, q.child2, left, right, height - 1, value);
       }
+    }
+    else{
+      System.out.println("Goes to else");
     }
 
     //do nothing if not in range
